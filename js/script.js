@@ -1,18 +1,24 @@
 // GRAB HTML ELEMENTS
+// 1 - div where profile info will appear
 const overviewDiv = document.querySelector(".overview");
+// 2 - ul where repo list will appear
 const repoList = document.querySelector(".repo-list");
+// 3 - section class repos (list of repos)
+const repoListSec = document.querySelector(".repos");
+// 4 - section class repo-data (indv repo data)
+const indRepoData = document.querySelector(".repo-data");
+
 // GLOBAL VARIABLES
 const username = "marcelap99";
 
-// console.log(overviewDiv);
 
-// CREATE ASYNC FUNCTION TO FETCH DATA FROM GIT HUB API
+
+// CREATE ASYNC FUNCTION TO FETCH DATA FROM GITHUB API
 const getData = async function(){
   // Fetch request to pull in data
   const fetchRequest = await fetch(`https://api.github.com/users/${username}`);
      // resolve the JSON response
   const jsonData = await fetchRequest.json();
-// console.log(jsonData);
 
 displayData(jsonData);
 };
@@ -54,7 +60,7 @@ const getRepos = async function(){
  const jsObj = await repoRequest.json();
 // console.log(jsObj);
 
-// call display repo function pass in json response
+// call display repo function pass in json response (array of objs)
 displayRepos(jsObj);
 };
 
@@ -72,5 +78,59 @@ const displayRepos = function(repos){
     // add new li to ul already visible in doc body
     repoList.append(repoLi);
   }
+
+};
+
+// Create event listner "click" for repoList UL
+repoList.addEventListener("click",function(e){
+  if(e.target.matches("h3")){
+    let repoName = e.target.innerText;
+    // console.log(repoName);
+    getEachRepo(repoName);
+  }
+
+});
+
+// CREATE ASYNC FUNCTION TO FETCH SPECIFIC REPO DATA & LANGUAGES FROM GITHUB API REPOS - 2 FETCH REQUESTS IN 1 ASYNC FUNCTION
+const getEachRepo = async function(repoName){
+  // Fetch request to pull in data indv repo
+  const fetchEachRepo = await fetch(`https://api.github.com/repos/${username}/${repoName}`);
+     // resolve the JSON response
+  const repoInfo = await fetchEachRepo.json();
+
+// Fetch request specifically for laguanges url
+  const fetchLanguages = await fetch(repoInfo.languages_url);
+   // resolve the JSON response - Object
+  const languageData = await fetchLanguages.json();
+  // console.log(languageData)
+  // Create emtpy array to insert languages
+  const languageArray = [];
+  // Loop through object, create array
+  for(const language in languageData){
+    languageArray.push(language);
+  }
+// console.log(languageArray)
+// CAll displaySpecificRepo pass in repoInfo & languageArray
+displaySpecificRepo(repoInfo,languageArray);
+};
+
+// Create a function to display the individual repo info - parameters repoInfo & languageArray
+const displaySpecificRepo = function(repoInfo,languageArray){
+  // empty ".repo-data" section
+  indRepoData.innerHTML = "";
+  // remove hide - class from ".repo-data" section
+  indRepoData.classList.remove("hide");
+  // add hide class to section .repos
+  repoListSec.classList.add("hide");
+  // Create a new div element
+  const repoDiv = document.createElement("div");
+  // Insert contents into new div using placeholders
+  repoDiv.innerHTML = `<h3>Name: ${repoInfo.name}</h3>
+  <p>Description: ${repoInfo.description}</p>
+  <p>Default Branch: ${repoInfo.default_branch}</p>
+  <p>Languages: ${languageArray.join(", ")}</p>
+  <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>`;
+  // append new div into  (indRepoData-.repo-data) section
+  indRepoData.append(repoDiv);
 
 };
