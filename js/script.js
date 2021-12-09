@@ -1,4 +1,4 @@
-// GRAB HTML ELEMENTS
+// GRAB HTML ELEMENTS /  SET GLOBAL VARIABLES
 // 1 - div where profile info will appear
 const overviewDiv = document.querySelector(".overview");
 // 2 - ul where repo list will appear
@@ -7,10 +7,13 @@ const repoList = document.querySelector(".repo-list");
 const repoListSec = document.querySelector(".repos");
 // 4 - section class repo-data (indv repo data)
 const indRepoData = document.querySelector(".repo-data");
+// 5 - select button - back to repo
+const backButton = document.querySelector(".back-button");
+// 6 - select input - w/ placeholder: search by name
+const filterInput = document.querySelector(".filter-repos");
 
-// GLOBAL VARIABLES
+// GLOBAL VARIABLES CONTINUED
 const username = "marcelap99";
-
 
 
 // CREATE ASYNC FUNCTION TO FETCH DATA FROM GITHUB API
@@ -67,6 +70,7 @@ displayRepos(jsObj);
 
 // create and name a function to display information about each repo.
 const displayRepos = function(repos){
+  filterInput.classList.remove("hide");
   // loop through array of objects
   for(const repo of repos){
     // create a li for each repo
@@ -122,6 +126,9 @@ const displaySpecificRepo = function(repoInfo,languageArray){
   indRepoData.classList.remove("hide");
   // add hide class to section .repos
   repoListSec.classList.add("hide");
+  // remove the hide class from back button
+  backButton.classList.remove("hide");
+
   // Create a new div element
   const repoDiv = document.createElement("div");
   // Insert contents into new div using placeholders
@@ -132,5 +139,36 @@ const displaySpecificRepo = function(repoInfo,languageArray){
   <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>`;
   // append new div into  (indRepoData-.repo-data) section
   indRepoData.append(repoDiv);
-
 };
+
+
+// Add event listener to back button - hide ind repo, hide button, show list of repos
+backButton.addEventListener("click",function(){
+  repoListSec.classList.remove("hide");
+  indRepoData.classList.add("hide");
+  backButton.classList.add("hide");
+});
+
+// Add event listener to input field
+filterInput.addEventListener("input",function(e){
+  // grab text being entered by user
+  const searchValue = e.target.value;
+  // Lowercase the contents of searchValue
+  const valueLowerCased = searchValue.toLowerCase();
+  // grab all html doc elements with ".repo" (created when repo list is generated) creates an Object
+  const repos = document.querySelectorAll(".repo");
+
+  // Loop through repos object, grab each indv repo
+  for (const repo of repos){
+    // Lowercase each repos text
+    const repoLowerCase = repo.innerText.toLowerCase();
+    // conditional statement: if input search text is included in repo list
+    if(repoLowerCase.includes(valueLowerCased)){
+      // Show specific repos in the list if text matches
+      repo.classList.remove("hide");
+    }else{
+      // Hide all repos that don't include matched in text
+      repo.classList.add("hide");
+    }
+  }
+});

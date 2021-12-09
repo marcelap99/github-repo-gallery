@@ -13,6 +13,10 @@ body {
     font-size: 16px;
 }
 
+p{
+  line-height:1.5;
+}
+
 .hide {
     /* '!important' is to make sure that when we add the class using JS, it takes precendence */
     display: none !important;
@@ -39,7 +43,7 @@ h1 {
     width: 100%;
     padding: 1em 0.5em;
     margin: 0;
-    font-size: 3.5em;
+    font-size: 3em;
     text-align: center;
     font-family: "Oswald", sans-serif;
     background-color: #483978;
@@ -132,6 +136,7 @@ ul {
 }
 
 .user-info div p {
+    line-height: 1.5;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -140,6 +145,7 @@ ul {
 }
 
 .filter-repos {
+    text-align: center;
     width: 300px;
     margin-top: 1em;
     padding: 1em;
@@ -171,10 +177,11 @@ section.repo-data {
 }
 
 .repo-list li {
-    width: 90%;
-    margin: 1em 0;
+    width: 99%;
+    margin: 0.5em 0;
     border: 1px solid #f86d58;
-    padding: 0.5em;
+    padding: 0.3em;
+    overflow:hidden;
 }
 
 .repo-list h3 {
@@ -224,6 +231,19 @@ section.repo-data {
     padding-left: 2em;
     padding-bottom: 2em;
 }
+
+button.back-button{
+    text-decoration: none;
+    width: 200px;
+    color: #483978;
+    padding: 0.75em;
+    margin-top: 1em;
+    cursor: pointer;
+    display: block;
+    background-color: #f86d58;
+    border: 1px solid #483978;
+}
+
 
 .view-repos {
     max-width: 200px;
